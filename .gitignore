@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Build / simulation artifacts
+*.vvp
+out/sim.vvp
+out/last_run.log
+
+# OS noise
+.DS_Store
+Thumbs.db
