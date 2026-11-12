@@ -18,6 +18,9 @@ no ACK, and recovery on the next frame.
 > model of the RM46 or S32 peripherals, the CAN transceiver, or IEEE 1588.
 > The goal is to demonstrate the architecture and the protocol logic, not to
 > validate hardware timing. See [Simplifications](#simplifications).
+>
+> A detailed walkthrough of the simulation and the output diagrams is in
+> [`REPORT.md`](REPORT.md).
 
 ---
 
