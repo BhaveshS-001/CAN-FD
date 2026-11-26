@@ -1,0 +1,48 @@
+REFERENCES — EL_5th_Sem CAN-FD / MICROCONTROLLER OVERVIEW
+Prepared: 23 October 2026
+
+Purpose
+This file records the main technical sources used by overview.txt. Prefer manufacturer documentation and standards bodies over unsourced blogs. Vendor family pages are starting points only; the exact device datasheet, reference manual, and errata take precedence for a design.
+
+1. STMicroelectronics — AN5348: Introduction to FDCAN peripherals for STM32 MCUs
+Official application note. Covers CAN-FD protocol, payloads up to 64 bytes, arbitration/data phases, FDCAN configuration, filters, FIFO and bus-monitoring mode. The official page identifies Rev. 6, January 2026; check the current revision before implementation.
+https://www.st.com/content/st_com/en/technical-documents/an5348-introduction-to-fdcan-peripherals-for-stm32-mcus-stmicroelectronics.html
+PDF: https://www.st.com/resource/en/application_note/an5348-introduction-to-fdcan-peripherals-for-stm32-mcus-stmicroelectronics.pdf
+
+2. CAN in Automation (CiA) — CAN FD: The basic idea
+Standards-industry background on the motivation and core concepts of CAN-FD. Use it alongside the relevant ISO 11898-1 edition and the selected controller's reference manual.
+https://www.can-cia.org/can-knowledge/can-fd-the-basic-idea
+
+3. Bosch Semiconductors — CAN FD Protocol
+Protocol overview from the CAN-FD developer. Useful for general concepts; controller-specific implementation should still follow the MCU/peripheral documentation.
+https://www.bosch-semiconductors.com/products/ip-modules/can-protocols/can-fd/
+
+4. NXP — S32K Automotive General-Purpose MCUs
+Family landing page for evaluating automotive-oriented MCU options. Use the exact candidate part's datasheet, reference manual, errata, SDK notes, and lifecycle information.
+https://www.nxp.com/products/processors-and-microcontrollers/s32-automotive-platform/s32k-auto-general-purpose-mcus:S32K-MCUS
+
+5. Microchip — CAN-FD MCUs
+Family overview for Microchip MCUs/DSCs with CAN-FD support. Confirm exact peripheral features and package/availability by device.
+https://www.microchip.com/en-us/products/interface-networking-connectivity/can/can-fd-mcus
+
+6. Microchip — MCP2517FD external CAN-FD controller datasheet
+Example of an external CAN-FD protocol controller accessed over SPI; it still needs a suitable physical-layer transceiver.
+https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/DataSheets/MCP2517FD-External-CAN-FD-Controller-with-SPI-Interface-20005688B.pdf
+
+7. Texas Instruments — TIDEP-01014 reference design
+Example implementation using TI CAN-FD hardware/tooling. Treat as an implementation example, not as a universal schematic or fixed BOM.
+https://www.ti.com/tool/TIDEP-01014
+
+8. Repository material to reconcile with the guide
+Architecture overview diagram:
+https://github.com/Chirag-R-Karanth/EL_5th_Sem/blob/main/Refrences/Architecture%20Overview.png
+Flowchart diagram:
+https://github.com/Chirag-R-Karanth/EL_5th_Sem/blob/main/Refrences/Flowchart.png
+Root TODO:
+https://github.com/Chirag-R-Karanth/EL_5th_Sem/blob/main/todo.md
+
+Engineering rules for use
+- A product family page is not a substitute for the exact part datasheet and reference manual.
+- Confirm CAN-FD support, nominal/data timing, listen-only semantics, transceiver compatibility, and errata for the exact selected part.
+- Confirm distributor stock, lifecycle, and lead time before procurement.
+- No exact MCU, regulator, fuse, transceiver, or termination decision should be treated as final until the project diagrams and actual hardware constraints are checked.

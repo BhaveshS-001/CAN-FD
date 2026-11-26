@@ -1,0 +1,13 @@
+design,metric,mean,min,max
+Previous (door open),cool_output,3.986357243319269,2.7,7.4
+Previous (door open),rack_inlet,22.913220815752464,22.5,23.1
+Previous (door open),fan_speed,77.82011251758085,77.5,78.2
+Previous (door open),return_air,25.144444444444446,24.5,25.6
+Previous (door open),supply_air,20.974683544303797,19.8,21.1
+Previous (door open),airflow,8.110042194092827,8.08,8.16
+Retrofitted (door closed),cool_output,4.0415620641562064,2.8,7.3
+Retrofitted (door closed),rack_inlet,22.528033472803344,22.1,22.7
+Retrofitted (door closed),fan_speed,77.38256624825662,75.8,78.1
+Retrofitted (door closed),return_air,25.588842398884236,25.3,25.7
+Retrofitted (door closed),supply_air,20.970013947001394,19.8,21.2
+Retrofitted (door closed),airflow,8.065453277545329,7.9,8.14

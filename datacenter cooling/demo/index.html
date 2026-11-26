@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Center Cooling | Interactive Engineering Demo</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#151f33;--line:#30415f;--text:#edf3ff;--muted:#9aabc6;--cyan:#55d6e8;--orange:#ffad66;--green:#76ddb0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#1b2b49,#0b1020 48%);color:var(--text);font:14px/1.5 system-ui,Arial}
+header,main{max-width:1400px;margin:auto;padding:24px}header{border-bottom:1px solid var(--line)}.eyebrow{color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}h1{font-size:clamp(27px,4vw,42px);margin:7px 0}h2{font-size:17px;margin:0 0 13px}.muted,.note{color:var(--muted)}.tag{display:inline-block;border:1px solid #4b668d;border-radius:99px;padding:5px 10px;font-size:11px;margin-top:10px}
+.kpis,.grid,.controls,.methods{display:grid;gap:13px}.kpis{grid-template-columns:repeat(4,1fr);margin:16px 0}.grid{grid-template-columns:repeat(12,1fr)}.panel,.kpi{background:#151f33eF;border:1px solid var(--line);border-radius:13px;padding:16px}.kpi{background:#0d172a}.kpi small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em}.kpi strong{font-size:24px}.span7{grid-column:span 7}.span5{grid-column:span 5}.span6{grid-column:span 6}.span12{grid-column:span 12}
+.controls{grid-template-columns:repeat(3,1fr)}label{display:flex;justify-content:space-between;font-size:12px;color:#c8d8f0}output{color:var(--cyan);font-weight:700}input{width:100%;accent-color:var(--cyan)}select,button{background:#0b172a;color:var(--text);border:1px solid #405779;border-radius:8px;padding:9px}button{cursor:pointer;margin-top:12px}.callout{background:#0c1b2c;border-left:3px solid var(--cyan);padding:10px;border-radius:0 8px 8px 0;margin-top:12px}
+canvas{width:100%;height:230px;display:block}.arch{background:#0b172a;border:1px solid var(--line);border-radius:10px;padding:10px}.arch svg{width:100%;height:auto}.flow{animation:move 2.7s linear infinite}.flow:nth-of-type(2){animation-delay:-.9s}.flow:nth-of-type(3){animation-delay:-1.8s}@keyframes move{0%{transform:translateX(0);opacity:0}15%,85%{opacity:1}100%{transform:translateX(140px);opacity:0}}
+.methods{grid-template-columns:repeat(3,1fr)}.method{background:#0c1729;border:1px solid var(--line);padding:12px;border-radius:10px}.method p,.note{font-size:11px}.pill{font-size:10px;color:#cceaff;background:#233a58;border-radius:99px;padding:3px 7px}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}td,th{text-align:left;padding:9px;border-bottom:1px solid var(--line)}th{color:#aec3e1}.good{color:var(--green)}.warn{color:var(--orange)}.eq{font-family:monospace;background:#091426;border:1px solid var(--line);padding:10px;border-radius:8px;color:#bceeff;overflow-wrap:anywhere}footer{margin-top:18px;padding-top:12px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+@media(max-width:850px){.span7,.span6,.span5,.span12{grid-column:span 12}.kpis{grid-template-columns:repeat(2,1fr)}.controls,.methods{grid-template-columns:1fr}}
+</style></head>
+<body>
+<header><div class="eyebrow">Engineering demonstrator · Rev 1.0</div><h1>Data Center Cooling</h1><div class="muted">Thermal management, airflow architecture and cooling-energy trade-offs through an interactive, assumption-driven simulation.</div><span class="tag">SIMULATED OUTPUTS · NOT FIELD MEASUREMENTS</span></header>
+<main>
+<div class="kpis">
+<div class="kpi"><small>IT electrical load</small><strong id="kl">500 kW</strong><div class="note">Heat released ≈ IT load</div></div>
+<div class="kpi"><small>Mean rack exhaust</small><strong id="kt">34.8 °C</strong><div class="note">Modelled steady state</div></div>
+<div class="kpi"><small>Cooling electrical power</small><strong id="kc">125 kW</strong><div class="note" id="coplabel">Assumed COP 4.0</div></div>
+<div class="kpi"><small>Simplified PUE</small><strong id="kp">1.25</strong><div class="note">1 + cooling / IT</div></div>
+</div>
+<div class="grid">
+<section class="panel span7"><h2>01 · Live thermal simulation</h2>
+<div class="controls">
+<div><label>IT load <output id="lo">500 kW</output></label><input id="load" type="range" min="100" max="1000" step="25" value="500"></div>
+<div><label>Cooling capacity <output id="co">650 kW</output></label><input id="capacity" type="range" min="250" max="1200" step="25" value="650"></div>
+<div><label>Airflow effectiveness <output id="ao">85%</output></label><input id="air" type="range" min="40" max="100" value="85"></div></div>
+<p><label>Cooling configuration</label><select id="mode"><option value="room">Conventional room air cooling</option><option value="contain" selected>Hot/cold aisle containment</option><option value="liquid">Direct-to-chip liquid cooling</option></select></p>
+<button id="reset">Reset scenario</button><div class="callout" id="status">Operating within the modelled cooling envelope.</div>
+</section>
+<section class="panel span5"><h2>02 · Cooling-system architecture</h2><div class="arch">
+<svg viewBox="0 0 520 300" role="img" aria-label="Conceptual data center airflow architecture">
+<defs><marker id="c" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6" fill="#55d6e8"/></marker><marker id="h" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6" fill="#ffad66"/></marker></defs>
+<rect x="12" y="12" width="496" height="276" rx="12" fill="#111d33" stroke="#405779"/>
+<text x="28" y="37" fill="#a9bddc" font-size="12">DATA HALL</text>
+<rect x="35" y="75" width="120" height="140" rx="7" fill="#203653" stroke="#6d9eff"/><text x="95" y="98" fill="#eaf3ff" text-anchor="middle" font-size="12">COLD AISLE</text>
+<rect x="180" y="75" width="160" height="140" rx="7" fill="#352a2a" stroke="#ffad66"/><text x="260" y="98" fill="#ffe2c9" text-anchor="middle" font-size="12">RACK ROW</text>
+<rect x="365" y="75" width="120" height="140" rx="7" fill="#3b2929" stroke="#ff6f78"/><text x="425" y="98" fill="#ffdadd" text-anchor="middle" font-size="12">HOT AISLE</text>
+<g fill="#29496b" stroke="#8bb5ed"><rect x="194" y="112" width="30" height="86"/><rect x="232" y="112" width="30" height="86"/><rect x="270" y="112" width="30" height="86"/><rect x="308" y="112" width="20" height="86"/></g>
+<path d="M155 145H188" stroke="#55d6e8" stroke-width="5" marker-end="url(#c)"/><path d="M340 145H365" stroke="#ffad66" stroke-width="5" marker-end="url(#h)"/>
+<path d="M425 72V52H95V72" stroke="#ffad66" stroke-width="3" fill="none" marker-end="url(#h)"/><text x="260" y="46" fill="#ffbd87" text-anchor="middle" font-size="10">Return air → cooling unit</text>
+<rect x="165" y="232" width="190" height="35" rx="6" fill="#1b3a4c" stroke="#55d6e8"/><text x="260" y="254" fill="#c8f8ff" text-anchor="middle" font-size="12">CRAH / cooling coil</text>
+<path d="M260 232V220H95V215" stroke="#55d6e8" stroke-width="3" fill="none" marker-end="url(#c)"/>
+<circle class="flow" cx="165" cy="145" r="4" fill="#9ff5ff"/><circle class="flow" cx="165" cy="160" r="4" fill="#9ff5ff"/><circle class="flow" cx="165" cy="130" r="4" fill="#9ff5ff"/>
+<text x="28" y="280" fill="#8299ba" font-size="9">Conceptual airflow path; not to scale</text></svg></div><p class="note">Cold supply air enters the cold aisle, absorbs IT heat across servers, and returns from the hot aisle to the cooling unit.</p></section>
+<section class="panel span6"><h2>03 · Temperature response over time</h2><canvas id="temp" width="700" height="260"></canvas><p class="note">First-order transient model after a load step; illustrative rack-exhaust response.</p></section>
+<section class="panel span6"><h2>04 · Cooling power vs IT load</h2><canvas id="power" width="700" height="260"></canvas><p class="note">Cooling electrical power = IT load / assumed COP. Curves are scenario assumptions, not vendor data.</p></section>
+<section class="panel span12"><h2>05 · Cooling strategy comparison</h2><div class="methods">
+<div class="method"><b>Conventional room air</b><p><span class="pill">Baseline</span></p><p>CRAC/CRAH units condition the room. Mixing and bypass airflow can reduce effectiveness.</p><p><b>Strength:</b> mature, broadly deployable.</p><p><b>Constraint:</b> difficult airflow management at high rack density.</p></div>
+<div class="method"><b>Hot/cold aisle containment</b><p><span class="pill">Airflow optimization</span></p><p>Physical separation limits mixing of hot exhaust and cold supply air.</p><p><b>Strength:</b> retrofit-friendly; improves usable cooling capacity.</p><p><b>Constraint:</b> containment quality and blanking panels matter.</p></div>
+<div class="method"><b>Direct-to-chip liquid</b><p><span class="pill">High-density option</span></p><p>Coolant removes heat near CPUs/GPUs, reducing dependence on room air for the dominant heat source.</p><p><b>Strength:</b> supports high heat flux and dense compute.</p><p><b>Constraint:</b> plumbing, leak management and facility integration.</p></div></div>
+<div style="overflow-x:auto"><table><thead><tr><th>Metric</th><th>Room air</th><th>Containment</th><th>Direct-to-chip</th></tr></thead><tbody>
+<tr><td>Airflow management</td><td class="warn">More mixing risk</td><td class="good">Better separation</td><td>Lower room-air burden</td></tr><tr><td>High rack density</td><td class="warn">More challenging</td><td>Improved, bounded</td><td class="good">Well suited</td></tr><tr><td>Retrofit complexity</td><td class="good">Low–medium</td><td class="good">Medium</td><td class="warn">High</td></tr><tr><td>Key engineering risk</td><td>Hot spots / bypass</td><td>Containment leakage</td><td>Coolant distribution / leaks</td></tr></tbody></table></div><p class="note">Qualitative comparison. Actual performance depends on climate, setpoints, rack density, redundancy, water availability and equipment design.</p></section>
+<section class="panel span7"><h2>06 · Rack-wise thermal profile</h2><canvas id="rack" width="700" height="260"></canvas><p class="note">Illustrative rack exhaust temperatures across a 12-rack row. Higher values indicate potential hot spots.</p></section>
+<section class="panel span5"><h2>07 · Model and interpretation</h2><div class="eq">Q̇IT ≈ PIT<br>Q̇cooling = PIT / COP<br>PUE ≈ 1 + Pcooling / PIT</div><p class="note">Simplified thermal response:</p><div class="eq">T(t) = Tin + ΔTss(1 − e^(−t/τ))</div><p class="note">Steady-state temperature rise is scaled by IT load, cooling capacity and airflow effectiveness. τ represents thermal response time.</p><div class="callout">Containment improves airflow delivery and reduces hot/cold mixing. Liquid cooling changes the heat-capture point. Neither guarantees lower total facility energy: pump power, heat rejection and operating conditions must be measured.</div></section>
+</div>
+<footer><b>Model disclosure:</b> All displayed values and charts are generated by a simplified illustrative model. COP values, inlet temperature, thermal time constant and rack variation are assumptions. They are not measured results, validated CFD, or a substitute for experimental data. Replace assumptions with sensor data for the final study.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id),s={load:500,capacity:650,air:85,mode:'contain'};
+const cfg={room:{cop:3.2,base:1,delta:17,tau:8},contain:{cop:4,base:.82,delta:13,tau:6},liquid:{cop:5,base:.6,delta:8,tau:5}};
+function canvas(id){let c=$(id),x=c.getContext('2d'),w=c.width,h=c.height;x.clearRect(0,0,w,h);x.font='12px system-ui';x.strokeStyle='#30415f';x.fillStyle='#9aabc6';for(let i=0;i<5;i++){let y=22+i*(h-55)/4;x.beginPath();x.moveTo(48,y);x.lineTo(w-14,y);x.stroke()}return{x,w,h}}
+function axes(x,w,h,max,min){x.textAlign='right';for(let i=0;i<5;i++){let v=max-i*(max-min)/4,y=22+i*(h-55)/4;x.fillText(v.toFixed(0),41,y+4)}}
+function plot(x,p,color,width=3){x.beginPath();p.forEach((a,i)=>i?x.lineTo(...a):x.moveTo(...a));x.strokeStyle=color;x.lineWidth=width;x.stroke()}
+function update(){let c=cfg[s.mode],ratio=s.load/s.capacity,air=s.air/85,rise=c.delta*Math.max(.35,Math.min(2.4,ratio))/Math.max(.45,air)*c.base,T=24+rise,cool=s.load/c.cop;
+$('kl').textContent=s.load+' kW';$('kt').textContent=T.toFixed(1)+' °C';$('kc').textContent=cool.toFixed(1)+' kW';$('kp').textContent=(1+cool/s.load).toFixed(2);$('coplabel').textContent='Assumed COP '+c.cop;$('lo').textContent=s.load+' kW';$('co').textContent=s.capacity+' kW';$('ao').textContent=s.air+'%';
+$('status').innerHTML=s.load>s.capacity?'<b style="color:#ffad66">Capacity warning:</b> IT load exceeds nominal cooling capacity. Model predicts elevated exhaust temperature; add capacity or reduce load.':'<b style="color:#76ddb0">Within nominal capacity:</b> load is below nominal cooling capacity. Check rack-level hot spots, not only the average.';
+let a=canvas('temp'),max=Math.max(50,Math.ceil(T/5)*5);axes(a.x,a.w,a.h,max,20);let pts=[];for(let i=0;i<=60;i++){let t=i/2,Tt=24+(T-24)*(1-Math.exp(-t/c.tau));pts.push([48+i*(a.w-65)/60,22+(max-Tt)/(max-20)*(a.h-55)])}plot(a.x,pts,'#55d6e8');a.x.textAlign='left';a.x.fillText('Exhaust °C',53,14);a.x.fillText('0 min',48,a.h-24);a.x.fillText('30 min',a.w-55,a.h-24);
+a=canvas('power');axes(a.x,a.w,a.h,1100,0);[['#6d9eff',3.2],['#55d6e8',4],['#ffad66',5]].forEach(([color,cop])=>{let p=[];for(let i=0;i<=40;i++){let load=100+i*22.5;p.push([48+i*(a.w-65)/40,22+(1100-load/cop)/1100*(a.h-55)])}plot(a.x,p,color,2)});a.x.textAlign='left';a.x.fillText('Cooling power (kW)',53,14);a.x.fillStyle='#6d9eff';a.x.fillText('Room air COP 3.2',55,40);a.x.fillStyle='#55d6e8';a.x.fillText('Containment COP 4.0',55,56);a.x.fillStyle='#ffad66';a.x.fillText('Liquid COP 5.0',55,72);
+a=canvas('rack');max=Math.max(50,Math.ceil((T+5)/5)*5);axes(a.x,a.w,a.h,max,20);for(let i=0;i<12;i++){let temp=T+(Math.sin(i*1.7)+Math.cos(i*.63))*.11*rise,x=65+i*(a.w-95)/12,y=22+(max-temp)/(max-20)*(a.h-55),base=a.h-33;a.x.fillStyle=temp>T+1.5?'#ffad66':'#55d6e8';a.x.fillRect(x,y,25,base-y);a.x.fillStyle='#9aabc6';a.x.textAlign='center';a.x.fillText('R'+(i+1),x+12,base+15)}a.x.textAlign='left';a.x.fillText('Exhaust °C',53,14)}
+['load','capacity','air'].forEach(id=>$(id).addEventListener('input',e=>{s[id]=+e.target.value;update()}));$('mode').addEventListener('change',e=>{s.mode=e.target.value;update()});$('reset').addEventListener('click',()=>{Object.assign(s,{load:500,capacity:650,air:85,mode:'contain'});$('load').value=500;$('capacity').value=650;$('air').value=85;$('mode').value='contain';update()});update();
+</script></body></html>

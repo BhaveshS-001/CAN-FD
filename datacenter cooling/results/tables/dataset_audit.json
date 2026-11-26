@@ -1,0 +1,30 @@
+{
+  "primary_measured": {
+    "sensor_session_previous": {"rows": 711, "start": "2022-06-03 15:00:00", "end": "2022-06-03 17:00:00", "door_state": "open"},
+    "sensor_session_retrofitted": {"rows": 717, "start": "2022-06-03 12:40:00", "end": "2022-06-03 14:40:00", "door_state": "closed"},
+    "rack_exhaust_measurements": 12,
+    "cfd_previous_profile_rows": 1001,
+    "cfd_retrofitted_profile_rows": 1001
+  },
+  "synthetic_telemetry": {
+    "dataset": "Enhanced Green AI Data Center Telemetry",
+    "rows": 100000,
+    "columns": 35,
+    "synthetic": true,
+    "missing_values": 28801,
+    "exhaust_temperature_mean_c": 29.44138982,
+    "exhaust_temperature_std_c": 5.0379959971,
+    "exhaust_temperature_min_c": 20.106,
+    "exhaust_temperature_max_c": 59.998,
+    "corr_exhaust_power": 0.6195464218,
+    "corr_exhaust_gpu": 0.6256043335
+  },
+  "data_center_inventory_rows": 96,
+  "caveats": [
+    "The 100,000-row telemetry dataset is explicitly synthetic.",
+    "The sensor sessions are at different times and have different door states.",
+    "The supplied operational sensor logs cover only two hours per design.",
+    "No synchronized cooling energy meter and rack thermal data series are supplied for an energy-savings claim.",
+    "The paper's original 10,849-sample dataset is not included."
+  ]
+}
